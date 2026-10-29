@@ -1,0 +1,49 @@
+### Pruebas para la extensión REST Client de VS Code (o cópialas a Thunder Client / Postman)
+### Cambia @base por la URL de Render cuando la despliegues.
+
+@base = http://localhost:3000
+
+### 1. ¿Está viva?
+GET {{base}}/
+
+### 2. Login (copia el token de la respuesta en @token)
+POST {{base}}/login
+Content-Type: application/json
+
+{ "correo": "admin@mail.com", "password": "1234" }
+
+###
+@token = PEGA_AQUI_EL_TOKEN
+
+### 3. Mi perfil
+GET {{base}}/perfil
+Authorization: Bearer {{token}}
+
+### 4. Todos los usuarios
+GET {{base}}/usuarios
+Authorization: Bearer {{token}}
+
+### 5. Un usuario
+GET {{base}}/usuarios/1
+Authorization: Bearer {{token}}
+
+### 6. Crear (solo admin)
+POST {{base}}/usuarios
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "correo": "sofia@mail.com", "password": "abcd", "rol": "usuario" }
+
+### 7. Actualizar (solo admin)
+PUT {{base}}/usuarios/2
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{ "correo": "sofia@mail.com", "password": "nueva", "rol": "usuario" }
+
+### 8. Borrar (solo admin) -> 204 sin body
+DELETE {{base}}/usuarios/2
+Authorization: Bearer {{token}}
+
+### 9. Sin token -> 401
+GET {{base}}/usuarios

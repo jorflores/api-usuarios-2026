@@ -142,35 +142,14 @@ private const val BASE_URL = "https://palabras-al-azar.trycloudflare.com/"
 ```kotlin
 private const val BASE_URL = "http://10.0.2.2:3000/"
 ```
-Como es HTTP sin cifrar, Android lo bloquea. Hay dos formas de permitirlo:
-
-**B1. Rápido (para probar en clase).** En `AndroidManifest.xml`, dentro de `<application ...>`:
+Como es HTTP sin cifrar, Android lo bloquea. Para permitirlo, en `AndroidManifest.xml`, dentro de `<application ...>`, agrega:
 ```xml
 android:usesCleartextTraffic="true"
 ```
-Permite HTTP hacia **cualquier** dominio. Úsalo solo para desarrollo y **quítalo antes de entregar o publicar** la app.
 
-**B2. Buena práctica (opcional).** Permite HTTP **solo** hacia `10.0.2.2`; cualquier otro dominio sigue exigiendo HTTPS. Así, si por error alguien escribe `http://` en la URL de Render, Android lo bloquea en lugar de mandar el token sin cifrar.
+> En un **teléfono físico** conectado a la misma red Wi-Fi, usa la IP de tu computadora (por ejemplo `http://192.168.1.50:3000/`). Es más sencillo usar la opción A.
 
-Archivo nuevo `app/src/main/res/xml/network_security_config.xml`:
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<network-security-config>
-    <!-- HTTP sin cifrar SOLO hacia la API local del emulador -->
-    <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="false">10.0.2.2</domain>
-    </domain-config>
-</network-security-config>
-```
-Y en `AndroidManifest.xml`, dentro de `<application ...>` (en lugar de `usesCleartextTraffic`):
-```xml
-android:networkSecurityConfig="@xml/network_security_config"
-```
-Usa **B1 o B2, no las dos**.
-
-> En un **teléfono físico** conectado a la misma red Wi-Fi, usa la IP de tu computadora (por ejemplo `http://192.168.1.50:3000/`) (con B2, agrégala también como `<domain>` en ese archivo). Es más sencillo usar la opción A.
-
-**Para regresar a Render:** vuelve a poner `https://<tu-servicio>.onrender.com/`. Ahí no se necesita nada en el manifest (puedes quitar `usesCleartextTraffic` o `networkSecurityConfig`).
+**Para regresar a Render:** vuelve a poner `https://<tu-servicio>.onrender.com/`. Ahí no se necesita `usesCleartextTraffic` (puedes dejarlo o quitarlo).
 
 ## Desplegar en Render
 

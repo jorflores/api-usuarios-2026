@@ -1,0 +1,45 @@
+services:
+  # Base de datos PostgreSQL
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: api_usuarios
+    ports:
+      - "5432:5432"          # para conectarte desde tu compu (pgAdmin, Prisma Studio)
+    volumes:
+      - pgdata:/var/lib/postgresql/data   # los datos sobreviven a "docker compose down"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d api_usuarios"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # API de Express
+  api:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy   # espera a que PostgreSQL acepte conexiones
+    environment:
+      # "db" es el nombre del servicio de arriba: así se ven los contenedores entre sí
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/api_usuarios
+      JWT_SECRET: secreto-local-de-desarrollo
+      ADMIN_CORREO: admin@mail.com
+      ADMIN_PASSWORD: "1234"
+      PORT: "3000"
+    ports:
+      - "3000:3000"
+
+  # Opcional: túnel HTTPS público hacia la API (sin cuenta de Cloudflare).
+  # Solo se enciende con: docker compose --profile https up --build
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    command: tunnel --no-autoupdate --url http://api:3000
+    depends_on:
+      - api
+    profiles: ["https"]
+
+volumes:
+  pgdata:

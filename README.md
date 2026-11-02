@@ -147,6 +147,8 @@ Como es HTTP sin cifrar, Android lo bloquea. Para permitirlo, en `AndroidManifes
 android:usesCleartextTraffic="true"
 ```
 
+> En un **teléfono físico** conectado a la misma red Wi-Fi, usa la IP de tu computadora (por ejemplo `http://192.168.1.50:3000/`).
+
 **Para regresar a Render:** vuelve a poner `https://<tu-servicio>.onrender.com/`. Ahí no se necesita `usesCleartextTraffic` (puedes dejarlo o quitarlo).
 
 ## Desplegar en Render
